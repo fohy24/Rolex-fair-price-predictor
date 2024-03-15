@@ -9,7 +9,9 @@ model = pickle.load(open(r'model\model_with_prepro.pkl', 'rb'))
 # pipeline = make_pipeline(preprocessor, model)
 
 def main():
+    st.image(r'img/header.png')
     st.title("Rolex Price Predictor")
+    
 
     df = pd.read_csv(r'data\df.csv').drop(columns=["price"]).dropna()
     fields = df.columns.to_list()
