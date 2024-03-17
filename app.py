@@ -123,11 +123,28 @@ def get_data_from_url(url):
 
     clean_df = clean_data(result_df)
 
-    user_selections_df = clean_df[['model', 'movement', 'case_material', 'bracelet_material',
-               'year_of_production', 'year_is_approximated', 'condition', 'scope_of_delivery',
-               'country', 'availability', 'case_diameter', 'bezel_material',
-               'crystal', 'dial', 'bracelet_color', 'clasp', 'clasp_material',
-               'rating', 'reviews', 'price', 'is_negotiable']]
+    desired_columns = [
+    'model', 'movement', 'case_material', 'bracelet_material',
+    'year_of_production', 'year_is_approximated', 'condition', 
+    'scope_of_delivery', 'country', 'availability', 'case_diameter', 
+    'bezel_material', 'crystal', 'dial', 'bracelet_color', 'clasp', 
+    'clasp_material', 'rating', 'reviews', 'price', 'is_negotiable'
+    ]
+
+    # Create a dictionary to hold your data
+    data_dict = {}
+
+    for column in desired_columns:
+        if column in clean_df.columns:
+            # If the column exists in clean_df, use its values
+            data_dict[column] = clean_df[column]
+        else:
+            # If the column does not exist, fill it with None
+            data_dict[column] = None
+
+    # Construct user_selections_df with the data dictionary
+    # This ensures all desired columns are included, with NaNs for missing ones
+    user_selections_df = pd.DataFrame(data_dict)
     return user_selections_df
 
 def main():
@@ -144,7 +161,7 @@ def main():
         "Paste a link below to predict the price!",
         label_visibility="visible",
         disabled=False,
-        placeholder="https://www.chrono24.ca/rolex/rolex-unworn-gmt-master-ii-sprite-40mm-oyster-bracelet-126720vtnr-box--papers-2023--id32868337.htm?searchHash=13ef07df_Mn4qfP&pos=1",
+        placeholder="https://www.chrono24.ca/rolex/rolex-gmt-master-ii--id24333283.htm",
         )
         if st.button("Predict from URL"):
             st.toast("Fetching data from URL...")
