@@ -4,13 +4,15 @@ import streamlit as st
 from sklearn.pipeline import make_pipeline
 import pickle
 
-model = pickle.load(open(r'model\model_with_prepro.pkl', 'rb'))
-# preprocessor = pickle.load(open(r'model\preprocessor.pkl', 'rb'))
-# pipeline = make_pipeline(preprocessor, model)
+model = pickle.load(open(r'model\xgboost_opt.pkl', 'rb'))
+# print(model)
 
 def main():
+    st.set_page_config(page_title="Rolex Price Prediction App")
     st.image(r'img/header.png')
-    st.title("Rolex Price Predictor")
+    st.header("Rolex Price Predictor")
+    st.write("Enter the specification and predict the price of a Rolex watch!")
+    st.sidebar.radio('drops sub-menu', options=['add drops', 'view drops'])
     
 
     df = pd.read_csv(r'data\df.csv').drop(columns=["price"]).dropna()
@@ -20,7 +22,7 @@ def main():
     slider_configs = {
         'rating': {'range': (1.0, 5.0), 'step': 0.1, 'default': float(np.median(df['rating'].dropna()))},
         'case_diameter': {'range': (13, 50), 'step': 1, 'default': int(np.median(df['case_diameter'].dropna()))},
-        'reviews': {'range': (0, 10000), 'step': 100, 'default': int(np.median(df['reviews'].dropna()))},
+        'reviews': {'range': (0, 10000), 'step': 50, 'default': int(np.median(df['reviews'].dropna()))},
     }
 
     # Binary fields with "Yes"/"No" options and default values
@@ -62,10 +64,15 @@ def main():
     if st.button("Predict"):
         # Convert user selections to DataFrame for prediction
         user_selections_df = pd.DataFrame([user_selections])
-        # Assume `model` is your trained model
+
+        # Convert back to 1 and 0
+        user_selections_df['year_is_approximated'] = user_selections_df['year_is_approximated'].map({'Yes': 1, 'No': 0})
+        user_selections_df['is_negotiable'] = user_selections_df['is_negotiable'].map({'Yes': 1, 'No': 0})
+        # print(user_selections_df)
+
         prediction = model.predict(user_selections_df)
 
-        st.success(f'This Rolex is estimated to sell for CA${prediction[0]:,.0f}')  # Format the prediction as currency
+        st.success(f'This Rolex is estimated to sell for CA${prediction[0]:,.0f}')
 
       
 if __name__=='__main__': 
