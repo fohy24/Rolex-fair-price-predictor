@@ -128,7 +128,7 @@ def get_data_from_url(url):
     'year_of_production', 'year_is_approximated', 'condition', 
     'scope_of_delivery', 'country', 'availability', 'case_diameter', 
     'bezel_material', 'crystal', 'dial', 'bracelet_color', 'clasp', 
-    'clasp_material', 'rating', 'reviews', 'price', 'is_negotiable'
+    'clasp_material', 'rating', 'reviews', 'is_negotiable'
     ]
 
     # Create a dictionary to hold your data
@@ -148,9 +148,23 @@ def get_data_from_url(url):
     return user_selections_df
 
 def main():
-    st.set_page_config(page_title="Rolex Price Prediction App")
-    st.image(r'img/header.png')
-    st.header("Rolex Price Predictor")
+    st.set_page_config(page_title="Rolex Fair Price Prediction App")
+    st.markdown(
+    """
+        <style>
+            .appview-container .main .block-container {{
+                padding-top: {padding_top}rem;
+                padding-bottom: {padding_bottom}rem;
+                }}
+
+        </style>""".format(
+        padding_top=2, padding_bottom=1
+    ),
+    unsafe_allow_html=True,
+    )
+
+    st.image(r'img/banner.png')
+    st.header("Rolex Fair Price Predictor")
     st.write("Enter the specification and predict the price of a Rolex watch!")
     # st.sidebar.radio('drops sub-menu', options=['add drops', 'view drops'])
     tab1, tab2 = st.tabs(["Predict from URL", "Manual Input"])
@@ -164,11 +178,12 @@ def main():
         placeholder="https://www.chrono24.ca/rolex/rolex-gmt-master-ii--id24333283.htm",
         )
         if st.button("Predict from URL"):
-            st.toast("Fetching data from URL...")
+            st.toast("Fetching data...")
             user_selections_df = get_data_from_url(url)
+            user_selections_df.replace('', None, inplace=True)
             prediction = model.predict(user_selections_df)
 
-            st.success(f'This Rolex is estimated to sell for CA${prediction[0]:,.0f}')
+            st.success(f'The fair price of this Rolex is estimated to be CA${prediction[0]:,.0f}')
 
     with tab2:
 
