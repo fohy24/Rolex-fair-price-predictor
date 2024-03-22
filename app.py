@@ -59,10 +59,10 @@ def get_data_from_url(url):
     options.add_argument('--no-sandbox')
 
     # Pretend to be a non-headless browser
-    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36")
-    options.add_argument("--lang=en-US")
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument("--window-size=1280,720")
+    # options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36")
+    # options.add_argument("--lang=en-US")
+    # options.add_argument("--disable-blink-features=AutomationControlled")
+    # options.add_argument("--window-size=1280,720")
 
     driver = webdriver.Chrome(options=options)
     driver.get(url)
