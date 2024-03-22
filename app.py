@@ -8,7 +8,7 @@ import janitor
 from selenium import webdriver
 from bs4 import BeautifulSoup
 
-model = pickle.load(open(r'model\xgboost_opt.pkl', 'rb'))
+model = pickle.load(open('model/xgboost_opt.pkl', 'rb'))
 url_data = {}
 df = pd.read_csv(r'data\df.csv').drop(columns=["price"]).dropna()
 fields = df.columns.to_list()
