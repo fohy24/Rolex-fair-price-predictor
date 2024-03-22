@@ -163,7 +163,7 @@ def main():
     unsafe_allow_html=True,
     )
 
-    st.image(r'img/banner.png')
+    # st.image(r'img/banner.png')
     st.header("Rolex Fair Price Predictor")
     st.write("Enter the specification and predict the price of a Rolex watch!")
     # st.sidebar.radio('drops sub-menu', options=['add drops', 'view drops'])
@@ -172,7 +172,7 @@ def main():
     with tab1:
         # st.subheader("Paste a link below to predict the price!")
         url = st.text_input(
-        "Paste a link below to predict the price!",
+        "Paste a link from [Chrono24.com](https://www.chrono24.ca/rolex/index-1.htm?pageSize=120&showpage=1) to predict the price!",
         label_visibility="visible",
         disabled=False,
         placeholder="https://www.chrono24.ca/rolex/rolex-gmt-master-ii--id24333283.htm",
@@ -188,7 +188,7 @@ def main():
     with tab2:
 
 
-        # Adjust slider configurations with default single value, not list
+        
         slider_configs = {
             'rating': {'range': (1.0, 5.0), 'step': 0.1, 'default': float(np.median(df['rating'].dropna()))},
             'case_diameter': {'range': (13, 50), 'step': 1, 'default': int(np.median(df['case_diameter'].dropna()))},
@@ -213,10 +213,10 @@ def main():
                 selectbox_options[friendly_name] = (field, options, options.index(default))
             elif field in unsorted_fields:
                 options = df[field].unique().tolist()
-                selectbox_options[friendly_name] = (field, options, 0)  # Default to the first option
+                selectbox_options[friendly_name] = (field, options, 0) 
             else:
                 options = sorted(df[field].unique().tolist())
-                selectbox_options[friendly_name] = (field, options, 0)  # Default to the first option
+                selectbox_options[friendly_name] = (field, options, 0)
 
         user_selections = {}
 
