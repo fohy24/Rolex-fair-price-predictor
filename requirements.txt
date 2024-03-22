@@ -115,3 +115,4 @@ zipp
 seleniumbase
 webdriver-manager
 PyVirtualDisplay
+ipdb
