@@ -71,7 +71,7 @@ PyQt5==5.15.9
 PySocks
 python-dateutil
 pytz
-pywin32==306
+# pywin32==306
 pyzmq
 requests
 rich
