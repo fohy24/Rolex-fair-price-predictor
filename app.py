@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 model = pickle.load(open('model/xgboost_opt.pkl', 'rb'))
 url_data = {}
-df = pd.read_csv(r'data\df.csv').drop(columns=["price"]).dropna()
+df = pd.read_csv('data/df.csv').drop(columns=["price"]).dropna()
 fields = df.columns.to_list()
 
 def is_convertible_to_int(value):
