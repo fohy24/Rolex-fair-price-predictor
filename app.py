@@ -133,7 +133,7 @@ def get_data_from_url(url):
     # time.sleep(np.random.randint(1,10))
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
-
+    driver.quit()
     try:
             title = soup.find('h1', class_="h3 m-y-0").contents[0].strip()
     except:
