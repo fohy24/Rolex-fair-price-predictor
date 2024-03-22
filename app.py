@@ -12,6 +12,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
+from selenium import webdriver
+from selenium.webdriver import FirefoxOptions
+
+
 from bs4 import BeautifulSoup
 
 model = pickle.load(open('model/xgboost_opt.pkl', 'rb'))
@@ -57,36 +61,36 @@ def clean_data(dirty_df):
     clean_df = dirty_df
     return clean_df
 
-@st.cache_resource(show_spinner=False)
-def get_webdriver_options(proxy: str = None) -> Options:
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--disable-features=NetworkService")
-    options.add_argument("--window-size=1920x1080")
-    options.add_argument("--disable-features=VizDisplayCompositor")
-    options.add_argument('--ignore-certificate-errors')
-    if proxy is not None:
-        options.add_argument(f"--proxy-server=socks5://{proxy}")
-    options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
-    return options
+# @st.cache_resource(show_spinner=False)
+# def get_webdriver_options(proxy: str = None) -> Options:
+#     options = Options()
+#     options.add_argument("--headless")
+#     options.add_argument("--no-sandbox")
+#     options.add_argument("--disable-dev-shm-usage")
+#     options.add_argument("--disable-gpu")
+#     options.add_argument("--disable-features=NetworkService")
+#     options.add_argument("--window-size=1920x1080")
+#     options.add_argument("--disable-features=VizDisplayCompositor")
+#     options.add_argument('--ignore-certificate-errors')
+#     if proxy is not None:
+#         options.add_argument(f"--proxy-server=socks5://{proxy}")
+#     options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
+#     return options
 
-@st.cache_resource(show_spinner=False)
-def get_chromedriver_path() -> str:
-    return shutil.which('chromedriver')
+# @st.cache_resource(show_spinner=False)
+# def get_chromedriver_path() -> str:
+#     return shutil.which('chromedriver')
 
-def get_webdriver_service(logpath) -> Service:
-    service = Service(
-        executable_path=get_chromedriver_path(),
-        log_output=logpath,
-    )
-    return service
+# def get_webdriver_service(logpath) -> Service:
+#     service = Service(
+#         executable_path=get_chromedriver_path(),
+#         log_output=logpath,
+#     )
+#     return service
 
-@st.cache_resource(show_spinner=False)
-def get_logpath() -> str:
-    return os.path.join(os.getcwd(), 'selenium.log')
+# @st.cache_resource(show_spinner=False)
+# def get_logpath() -> str:
+    # return os.path.join(os.getcwd(), 'selenium.log')
 
 # @st.experimental_singleton
 # def get_driver():
@@ -96,6 +100,12 @@ def get_logpath() -> str:
 #     options.add_argument('--no-sandbox')
 #     return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
+@st.experimental_singleton
+def installff():
+  os.system('sbase install geckodriver')
+  os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
+
+_ = installff()
 
 def get_data_from_url(url):
     url_data = {}
@@ -111,8 +121,14 @@ def get_data_from_url(url):
     # options.add_argument("--disable-blink-features=AutomationControlled")
     # options.add_argument("--window-size=1280,720")
 
-    driver = webdriver.Chrome(options=get_webdriver_options(),
-                        service=get_webdriver_service(logpath=get_logpath()))
+    # driver = webdriver.Chrome(options=get_webdriver_options(),
+    #                     service=get_webdriver_service(logpath=get_logpath()))
+
+    opts = FirefoxOptions()
+    opts.add_argument("--headless")
+    driver = webdriver.Firefox(options=opts)
+
+
     driver.get(url)
     # time.sleep(np.random.randint(1,10))
     html = driver.page_source
