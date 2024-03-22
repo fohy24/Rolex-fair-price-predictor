@@ -5,7 +5,7 @@ from sklearn.pipeline import make_pipeline
 import pickle
 import janitor
 import os, sys
-
+import shutil
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -57,13 +57,44 @@ def clean_data(dirty_df):
     clean_df = dirty_df
     return clean_df
 
-@st.experimental_singleton
-def get_driver():
+@st.cache_resource(show_spinner=False)
+def get_webdriver_options(proxy: str = None) -> Options:
     options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
-    options.add_argument('--no-sandbox')
-    return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-features=NetworkService")
+    options.add_argument("--window-size=1920x1080")
+    options.add_argument("--disable-features=VizDisplayCompositor")
+    options.add_argument('--ignore-certificate-errors')
+    if proxy is not None:
+        options.add_argument(f"--proxy-server=socks5://{proxy}")
+    options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
+    return options
+
+@st.cache_resource(show_spinner=False)
+def get_chromedriver_path() -> str:
+    return shutil.which('chromedriver')
+
+def get_webdriver_service(logpath) -> Service:
+    service = Service(
+        executable_path=get_chromedriver_path(),
+        log_output=logpath,
+    )
+    return service
+
+@st.cache_resource(show_spinner=False)
+def get_logpath() -> str:
+    return os.path.join(os.getcwd(), 'selenium.log')
+
+# @st.experimental_singleton
+# def get_driver():
+#     options = Options()
+#     options.add_argument('--headless')
+#     options.add_argument('--disable-gpu')
+#     options.add_argument('--no-sandbox')
+#     return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 
 def get_data_from_url(url):
@@ -80,7 +111,8 @@ def get_data_from_url(url):
     # options.add_argument("--disable-blink-features=AutomationControlled")
     # options.add_argument("--window-size=1280,720")
 
-    driver = get_driver()
+    driver = webdriver.Chrome(options=get_webdriver_options(),
+                        service=get_webdriver_service(logpath=get_logpath()))
     driver.get(url)
     # time.sleep(np.random.randint(1,10))
     html = driver.page_source
