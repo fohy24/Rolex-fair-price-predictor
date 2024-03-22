@@ -62,7 +62,7 @@ def get_driver():
 def get_data_from_url(url):
     url_data = {}
     
-    options = webdriver.ChromeOptions()
+    options = Options()
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     options.add_argument('--no-sandbox')
@@ -73,7 +73,7 @@ def get_data_from_url(url):
     # options.add_argument("--disable-blink-features=AutomationControlled")
     # options.add_argument("--window-size=1280,720")
 
-    driver = webdriver.Chrome(options=options)
+    driver = get_driver()
     driver.get(url)
     # time.sleep(np.random.randint(1,10))
     html = driver.page_source
