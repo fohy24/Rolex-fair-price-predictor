@@ -13,3 +13,4 @@ streamlit==1.32.2
 xgboost
 seleniumbase
 webdriver-manager
+scikit-learn
