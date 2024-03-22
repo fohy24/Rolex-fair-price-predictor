@@ -2,7 +2,7 @@ altair @ file:///home/conda/feedstock_root/build_artifacts/altair_1696364485230/
 annotated-types @ file:///home/conda/feedstock_root/build_artifacts/annotated-types_1696634205638/work
 asttokens @ file:///home/conda/feedstock_root/build_artifacts/asttokens_1698341106958/work
 attrs @ file:///home/conda/feedstock_root/build_artifacts/attrs_1704011227531/work
-beautifulsoup4==4.12.3
+beautifulsoup4
 blinker==1.7.0
 blis @ file:///D:/bld/cython-blis_1696148950713/work
 Brotli @ file:///D:/bld/brotli-split_1695989908365/work
