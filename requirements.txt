@@ -112,3 +112,6 @@ wsproto==1.2.0
 xarray==2024.2.0
 xgboost
 zipp
+
+seleniumbase
+webdriver-manager
