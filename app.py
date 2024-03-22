@@ -212,7 +212,7 @@ def get_data_from_url(url):
     return user_selections_df
 
 def main():
-    st.set_page_config(page_title="Rolex Fair Price Prediction App")
+    # st.set_page_config(page_title="Rolex Fair Price Prediction App")
     st.markdown(
     """
         <style>
