@@ -100,12 +100,12 @@ def clean_data(dirty_df):
 #     options.add_argument('--no-sandbox')
 #     return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-@st.cache_resource
-def installff():
-  os.system('sbase install geckodriver')
-  os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
+# @st.cache_resource
+# def installff():
+#   os.system('sbase install geckodriver')
+#   os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
 
-_ = installff()
+# _ = installff()
 
 def get_data_from_url(url):
     url_data = {}
