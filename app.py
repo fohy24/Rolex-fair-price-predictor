@@ -11,10 +11,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-
-from selenium import webdriver
 from selenium.webdriver import FirefoxOptions
-
 
 from bs4 import BeautifulSoup
 
@@ -24,6 +21,15 @@ df = pd.read_csv('data/df.csv').drop(columns=["price"]).dropna()
 fields = df.columns.to_list()
 
 def is_convertible_to_int(value):
+    """
+    Check if the given value can be converted to an integer.
+
+    Args:
+        value: The value to be checked for integer conversion capability.
+
+    Returns:
+        bool: True if the value can be converted to an integer, False otherwise.
+    """
     try:
         int(value)
         return True
@@ -31,6 +37,26 @@ def is_convertible_to_int(value):
         return False
 
 def clean_data(dirty_df):
+    """
+    Clean the given DataFrame by performing a series of operations to standardize
+    and correct the data. These operations include:
+
+    - Standardizing column names.
+    - Filtering rows based on the convertibility of 'case_diameter' values to integers.
+    - Converting 'case_diameter' to integer values.
+    - Adding a column to indicate whether the price is negotiable.
+    - Cleaning and converting 'price' to numeric values, keeping only entries with prices in CA$.
+    - Adding a column to indicate whether the year of production is approximated.
+    - Cleaning 'year_of_production' to keep only the year or mark as NaN if unknown.
+    - Simplifying 'location' to contain only the country.
+
+    Args:
+        dirty_df (DataFrame): The DataFrame to be cleaned.
+
+    Returns:
+        DataFrame: The cleaned DataFrame with standardized and cleaned data.
+    """
+
     dirty_df = dirty_df.clean_names()
     convertible_mask = dirty_df['case_diameter'].str[:2].apply(is_convertible_to_int)
     dirty_df = dirty_df[convertible_mask]
@@ -61,68 +87,27 @@ def clean_data(dirty_df):
     clean_df = dirty_df
     return clean_df
 
-# @st.cache_resource(show_spinner=False)
-# def get_webdriver_options(proxy: str = None) -> Options:
-#     options = Options()
-#     options.add_argument("--headless")
-#     options.add_argument("--no-sandbox")
-#     options.add_argument("--disable-dev-shm-usage")
-#     options.add_argument("--disable-gpu")
-#     options.add_argument("--disable-features=NetworkService")
-#     options.add_argument("--window-size=1920x1080")
-#     options.add_argument("--disable-features=VizDisplayCompositor")
-#     options.add_argument('--ignore-certificate-errors')
-#     if proxy is not None:
-#         options.add_argument(f"--proxy-server=socks5://{proxy}")
-#     options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
-#     return options
-
-# @st.cache_resource(show_spinner=False)
-# def get_chromedriver_path() -> str:
-#     return shutil.which('chromedriver')
-
-# def get_webdriver_service(logpath) -> Service:
-#     service = Service(
-#         executable_path=get_chromedriver_path(),
-#         log_output=logpath,
-#     )
-#     return service
-
-# @st.cache_resource(show_spinner=False)
-# def get_logpath() -> str:
-    # return os.path.join(os.getcwd(), 'selenium.log')
-
-# @st.experimental_singleton
-# def get_driver():
-#     options = Options()
-#     options.add_argument('--headless')
-#     options.add_argument('--disable-gpu')
-#     options.add_argument('--no-sandbox')
-#     return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-
-# @st.cache_resource
-# def installff():
-#   os.system('sbase install geckodriver')
-#   os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
-
-# _ = installff()
 
 def get_data_from_url(url):
+    """
+    Scrapes data from a webpage at the given URL, extracts relevant information,
+    and turn it into a pandas DataFrame.
+
+    The function uses Selenium with a headless Firefox browser for web scraping, 
+    BeautifulSoup for parsing HTML, and pandas for data manipulation. The scraped
+    data is cleaned and ready to be passed into the fitted model.
+
+    Args:
+        url (str): The URL of the webpage to scrape.
+
+    Returns:
+        DataFrame: A pandas DataFrame containing cleaned data from the webpage,
+        with columns for product attributes such as model, movement,
+        case material, etc., as well as extracted metadata like title, subtitle,
+        rating, and reviews.
+    """
+
     url_data = {}
-    
-    # options = Options()
-    # options.add_argument('--headless')
-    # options.add_argument('--disable-gpu')
-    # options.add_argument('--no-sandbox')
-
-    # Pretend to be a non-headless browser
-    # options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36")
-    # options.add_argument("--lang=en-US")
-    # options.add_argument("--disable-blink-features=AutomationControlled")
-    # options.add_argument("--window-size=1280,720")
-
-    # driver = webdriver.Chrome(options=get_webdriver_options(),
-    #                     service=get_webdriver_service(logpath=get_logpath()))
 
     opts = FirefoxOptions()
     opts.add_argument("--headless")
@@ -195,7 +180,7 @@ def get_data_from_url(url):
     'clasp_material', 'rating', 'reviews', 'is_negotiable'
     ]
 
-    # Create a dictionary to hold your data
+    # Create a dictionary to hold data
     data_dict = {}
 
     for column in desired_columns:
@@ -212,7 +197,14 @@ def get_data_from_url(url):
     return user_selections_df
 
 def main():
-    # st.set_page_config(page_title="Rolex Fair Price Prediction App")
+    """
+    The main entry point of the Streamlit application designed to predict the fair price of Rolex watches.
+    Based on the input method chosen by the user, the application fetches and processes the data,
+    then uses the fitted model to predict and display the fair price of the Rolex watch.
+
+    This function uses Streamlit components to create the UI, handles user inputs, and displays the prediction results.
+    """
+
     st.markdown(
     """
         <style>
@@ -251,15 +243,13 @@ def main():
 
     with tab2:
 
-
-        
         slider_configs = {
             'rating': {'range': (1.0, 5.0), 'step': 0.1, 'default': float(np.median(df['rating'].dropna()))},
             'case_diameter': {'range': (13, 50), 'step': 1, 'default': int(np.median(df['case_diameter'].dropna()))},
             'reviews': {'range': (0, 10000), 'step': 50, 'default': int(np.median(df['reviews'].dropna()))},
         }
 
-        # Binary fields with "Yes"/"No" options and default values
+        # Binary fields and default values
         binary_options = {
             'year_is_approximated': {'options': ['Yes', 'No'], 'default': 'No'},
             'is_negotiable': {'options': ['Yes', 'No'], 'default': 'No'}
@@ -267,7 +257,7 @@ def main():
 
         unsorted_fields = ['condition', 'scope_of_delivery', 'country', 'availability']
 
-        # Generate selectbox options with default values where applicable
+        # Generate selectbox options with default values
         selectbox_options = {}
         for field in fields:
             friendly_name = ' '.join(word.capitalize() for word in field.split('_'))
@@ -284,7 +274,6 @@ def main():
 
         user_selections = {}
 
-        # Iterate through the dictionary to create input widgets and store selections
         for category, (original_field_name, options, default_index) in selectbox_options.items():
             if original_field_name in slider_configs:
                 config = slider_configs[original_field_name]
