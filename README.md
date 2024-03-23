@@ -2,7 +2,9 @@
 
 The Rolex Fair Price Predictor is a XGBoost model aimed at estimating the fair market price of any Rolex watches, given its specification and condition.  
   
-This project leverages data scraped from [chrono24.ca](https://www.chrono24.ca/) as of February 22, 2024. 
+This project leverages data scraped from [chrono24.ca](https://www.chrono24.ca/) as of February 22, 2024.  
+
+The Jupyter notebook [Rolex_price_prediction.ipynb](Rolex_price_prediction.ipynb) contains details of the model development and rationales.
 
 ## Getting Started
 
