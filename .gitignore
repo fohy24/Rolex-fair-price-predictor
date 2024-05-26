@@ -162,6 +162,7 @@ cython_debug/
 # large data
 *.csv
 !df.csv
+!model/xgboost_cv_result.csv
 
 # scrap
 scrap/
